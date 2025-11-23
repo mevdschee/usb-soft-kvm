@@ -212,7 +212,6 @@ sudo mkdir -p "$SCRIPT_DIR"
 # Create the connection script (keyboard connected)
 cat << EOF | sudo tee "$SCRIPT_DIR/usb-keyboard-connected" > /dev/null
 #!/bin/bash
-sleep 1
 ddccontrol -r 0x60 -w $INPUT_CONNECTED dev:$DEVICE_PATH
 logger "USB-Soft-KVM: Keyboard connected - switched to input $INPUT_CONNECTED (Desktop)"
 EOF
@@ -220,7 +219,6 @@ EOF
 # Create the disconnection script (keyboard disconnected)
 cat << EOF | sudo tee "$SCRIPT_DIR/usb-keyboard-disconnected" > /dev/null
 #!/bin/bash
-sleep 1
 ddccontrol -r 0x60 -w $INPUT_DISCONNECTED dev:$DEVICE_PATH
 logger "USB-Soft-KVM: Keyboard disconnected - switched to input $INPUT_DISCONNECTED (Laptop)"
 EOF
