@@ -6,6 +6,43 @@ This setup assumes:
 - **Keyboard disconnected** (laptop mode): Switches to input 17 (HDMI)
 - **Keyboard connected** (desktop mode): Switches to input 16 (DisplayPort - this machine)
 
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                                                                     │
+│  ┌──────────┐                              ┌──────────┐             │
+│  │  Laptop  │                              │ Desktop  │             │
+│  │          │                              │ (This PC)│             │
+│  │          │                              │          │             │
+│  └─────┬────┘                              └────┬─────┘             │
+│        │                                        │                   │
+│        │ HDMI                       DisplayPort │                   │
+│        │                                        │                   │
+│        │         ┌────────────────┐             │                   │
+│        └────────►│                │◄────────────┘                   │
+│                  │    Monitor     │                                 │
+│                  │                │                                 │
+│                  └────────┬───────┘                                 │
+│                           │                                         │
+│                           │ I2C/DDC                                 │
+│                           │ (Control)                               │
+│                           │                                         │
+│                  ┌────────▼───────┐                                 │
+│                  │ monitor-       │◄─── USB Keyboard (monitored)    │
+│                  │ keyboard.sh    │                                 │
+│                  │                │                                 │
+│                  │ • Detects USB  │                                 │
+│                  │ • Sends DDC    │                                 │
+│                  │   commands     │                                 │
+│                  └────────────────┘                                 │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+When keyboard is CONNECTED → Switch to DisplayPort (Desktop)
+When keyboard is DISCONNECTED → Switch to HDMI (Laptop)
+```
+
 ## Prerequisites
 
 1. Install ddccontrol:
