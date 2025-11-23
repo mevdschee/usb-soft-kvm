@@ -20,8 +20,8 @@ Instead of manually switching your monitor's input every time you toggle your US
 
 1. udev rules monitor USB device events on the Desktop PC
 2. USB switch connects keyboard to either Laptop or Desktop
-3. Keyboard connects to Desktop → udev triggers script → Monitor switches to DisplayPort
-4. Keyboard disconnects from Desktop → udev triggers script → Monitor switches to HDMI (Laptop)
+3. Keyboard connects to Desktop → udev triggers DDC/CI command → Monitor switches to DisplayPort
+4. Keyboard disconnects from Desktop → udev triggers DDC/CI command → Monitor switches to HDMI (Laptop)
 5. Monitor switching happens instantly via DDC/CI protocol over I2C
 
 ## Requirements
@@ -142,15 +142,13 @@ Here: Vendor ID = `04d9`, Product ID = `a055`
 Create `/etc/udev/rules.d/90-usb-soft-kvm.rules`:
 
 ```bash
-ACTION=="add", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/usr/local/bin/usb-keyboard-connected_udev"
-ACTION=="remove", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/usr/local/bin/usb-keyboard-disconnected_udev"
+ACTION=="add", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/bin/sh -c '/usr/bin/ddccontrol -r 0x60 -w 15 dev:/dev/i2c-12; /usr/bin/logger \"USB-Soft-KVM: Keyboard connected - switched to input 15 (Desktop)\"'"
+ACTION=="remove", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/bin/sh -c '/usr/bin/ddccontrol -r 0x60 -w 17 dev:/dev/i2c-12; /usr/bin/logger \"USB-Soft-KVM: Keyboard disconnected - switched to input 17 (Laptop)\"'"
 ```
 
-### 6. Create Scripts
+Replace `04d9`, `a055`, `15`, `17`, and `/dev/i2c-12` with your values.
 
-See the `usb-soft-kvm.sh` script for the exact script templates, substituting your values.
-
-### 7. Reload udev
+### 6. Reload udev
 
 ```bash
 sudo udevadm control --reload-rules
@@ -174,7 +172,7 @@ To remove USB-Soft-KVM:
 ./usb-soft-kvm.sh
 ```
 
-Select "Uninstall" from the menu. This will remove all udev rules and scripts.
+Select "Uninstall" from the menu. This will remove the udev rules.
 
 ## Troubleshooting
 
@@ -194,12 +192,10 @@ Select "Uninstall" from the menu. This will remove all udev rules and scripts.
 
 ## Advanced Configuration
 
-The udev-based system creates these files:
-- `/etc/udev/rules.d/90-usb-soft-kvm.rules` - udev rules
-- `/usr/local/bin/usb-keyboard-connected*` - Scripts for keyboard connection
-- `/usr/local/bin/usb-keyboard-disconnected*` - Scripts for keyboard disconnection
+The udev-based system creates this file:
+- `/etc/udev/rules.d/90-usb-soft-kvm.rules` - udev rules with inline commands
 
-You can manually edit these files to customize behavior, such as:
+You can manually edit this file to customize behavior, such as:
 - Adding notification sounds
-- Triggering additional scripts
+- Triggering additional commands
 - Adjusting timing with different sleep values
