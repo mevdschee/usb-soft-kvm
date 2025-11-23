@@ -18,11 +18,11 @@ Instead of manually switching your monitor's input every time you toggle your US
 
 ## How It Works
 
-1. Desktop PC runs the monitoring service (this software)
+1. udev rules monitor USB device events on the Desktop PC
 2. USB switch connects keyboard to either Laptop or Desktop
-3. Keyboard connects to Desktop → Monitor switches to DisplayPort
-4. Keyboard disconnects from Desktop → Monitor switches to HDMI (Laptop)
-5. Monitor switching happens via DDC/CI protocol over I2C
+3. Keyboard connects to Desktop → udev triggers script → Monitor switches to DisplayPort
+4. Keyboard disconnects from Desktop → udev triggers script → Monitor switches to HDMI (Laptop)
+5. Monitor switching happens instantly via DDC/CI protocol over I2C
 
 ## Requirements
 
@@ -35,7 +35,7 @@ Instead of manually switching your monitor's input every time you toggle your US
   - Linux system (tested on Ubuntu/Debian)
   - `ddccontrol` package
   - `i2c-dev` kernel module
-  - systemd (for service management)
+  - `dialog` package (for installer)
 
 ## Architecture
 
@@ -77,209 +77,129 @@ When keyboard is CONNECTED → Switch to DisplayPort (Desktop)
 When keyboard is DISCONNECTED → Switch to HDMI (Laptop)
 ```
 
-## Prerequisites
+## Quick Installation
 
-1. Install ddccontrol:
-   ```bash
-   sudo apt-get install ddccontrol
-   ```
+Run the interactive script which will guide you through the configuration:
 
-2. Ensure the i2c device is accessible:
-   ```bash
-   sudo ddccontrol -p
-   ```
+```bash
+./usb-soft-kvm.sh
+```
 
-3. Load i2c-dev kernel module if needed:
-   ```bash
-   sudo modprobe i2c-dev
-   sudo sh -c 'echo "i2c-dev" >> /etc/modules'
-   ```
+Select "Install or Reinstall" from the menu. The installer will:
+1. Detect your monitor's I2C bus
+2. Show available input sources and let you select which to use
+3. Detect your USB keyboard
+4. Install udev rules to trigger automatic switching
 
-## Configuration Guide
+## Manual Installation (if needed)
 
-Before using this service, you need to identify the correct values for your setup.
+If you prefer manual configuration or the installer doesn't work:
 
-### 1. Identify Your I2C Bus
+### 1. Install Prerequisites
 
-First, probe for available monitors:
+```bash
+sudo apt-get install ddccontrol dialog
+sudo modprobe i2c-dev
+sudo sh -c 'echo "i2c-dev" >> /etc/modules'
+```
+
+### 2. Identify Your I2C Bus
+
 ```bash
 sudo ddccontrol -p
 ```
 
-This will list all detected monitors and their I2C bus addresses. Look for output like:
+Look for your monitor's device path (e.g., `/dev/i2c-12`).
+
+### 3. Identify Input Source Values
+
+The same `ddccontrol -p` output shows available inputs:
+
 ```
-Detected monitors :
- - Device: dev:/dev/i2c-12
-   DDC/CI supported: Yes
-   Monitor Name: Iiyama GB3461WQSU (DP)
-```
-
-**Configuration:**
-Note the device path (e.g., `/dev/i2c-12`). Update the `DEVICE` variable in `monitor-keyboard.sh` with this value.
-
-### 2. Identify Display Input Source Values
-
-To find the correct input source values for HDMI and DisplayPort, run:
-```bash
-sudo ddccontrol -p
-```
-
-This will probe your monitor and list all available input sources with their corresponding values. Look for the input source section in the output and note the values for your HDMI and DisplayPort inputs.
-
-Example output:
-```
-Detected monitors :
- - Device: dev:/dev/i2c-12
-   DDC/CI supported: Yes
-   Monitor Name: Iiyama GB3461WQSU (DP)
-   Input type: Digital
-
-...
-
 > Input settings
         > Input sources
-                > id=inputsource, name=Input Source Select (Main), address=0x60, delay=-1ms, type=2
                   Possible values:
                         > id=dp1 - name=DP-1, value=15
-                        > id=dp2 - name=DP-2, value=16
                         > id=hdmi1 - name=HDMI-1, value=17
-                        > id=hdmi2 - name=HDMI-2, value=18
-                  supported, value=16, maximum=8206
 ```
 
-In this example, the values are:
-- DisplayPort 1: `15`
-- DisplayPort 2: `16`
-- HDMI 1: `17`
-- HDMI 2: `18`
+Note which values correspond to your desktop and laptop connections.
 
-**Configuration:**
-1. Identify which input your **laptop** uses (e.g., HDMI 1 = value `17`)
-2. Identify which input your **desktop** uses (e.g., DisplayPort 1 = value `15`)
-3. Edit `monitor-keyboard.sh` and set:
-   - `INPUT_DISCONNECTED=17` (the laptop's HDMI value)
-   - `INPUT_CONNECTED=15` (the desktop's DisplayPort value)
+### 4. Identify Your Keyboard
 
-### 3. Identify Your Keyboard Name
-
-To find the exact name of your USB keyboard:
-
-1. Unplug your keyboard, then run:
-   ```bash
-   lsusb > /tmp/before.txt
-   ```
-
-2. Plug in your keyboard, then run:
-   ```bash
-   lsusb > /tmp/after.txt
-   diff /tmp/before.txt /tmp/after.txt
-   ```
-
-3. The difference will show your keyboard. For example:
-   ```
-   > Bus 001 Device 010: ID 04d9:a055 Holtek Semiconductor, Inc. HOLTEK USB-HID Keyboard
-   ```
-
-4. The keyboard name to use is a substring of the text after "ID" (e.g., "HOLTEK USB-HID Keyboard").
-
-Alternatively, view all USB devices:
 ```bash
 lsusb
 ```
 
-And look for your keyboard in the list. 
-
-**Configuration:**
-Update the `KEYBOARD_NAME` variable in `monitor-keyboard.sh` with the exact name.
-
-## Installation Steps
-
-1. Make the script executable:
-   ```bash
-   chmod +x monitor-keyboard.sh
-   ```
-
-2. Copy the service file to systemd directory:
-   ```bash
-   sudo cp keyboard-monitor.service /etc/systemd/system/
-   ```
-
-3. Update the ExecStart path in the service file if you move the script:
-   ```bash
-   sudo nano /etc/systemd/system/keyboard-monitor.service
-   ```
-
-4. Reload systemd daemon:
-   ```bash
-   sudo systemctl daemon-reload
-   ```
-
-5. Enable the service to start on boot:
-   ```bash
-   sudo systemctl enable keyboard-monitor.service
-   ```
-
-6. Start the service:
-   ```bash
-   sudo systemctl start keyboard-monitor.service
-   ```
-
-## Managing the Service
-
-Check service status:
-```bash
-sudo systemctl status keyboard-monitor.service
+Find your keyboard and note its Vendor ID and Product ID. For example:
 ```
+Bus 001 Device 010: ID 04d9:a055 Holtek Semiconductor, Inc.
+```
+Here: Vendor ID = `04d9`, Product ID = `a055`
+
+### 5. Create udev Rules
+
+Create `/etc/udev/rules.d/90-usb-soft-kvm.rules`:
+
+```bash
+ACTION=="add", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/usr/local/bin/usb-keyboard-connected_udev"
+ACTION=="remove", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/usr/local/bin/usb-keyboard-disconnected_udev"
+```
+
+### 6. Create Scripts
+
+See the `usb-soft-kvm.sh` script for the exact script templates, substituting your values.
+
+### 7. Reload udev
+
+```bash
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+
+## Testing
+
+Unplug and replug your USB keyboard. The monitor should switch inputs automatically.
 
 View logs:
 ```bash
-sudo journalctl -u keyboard-monitor.service -f
+journalctl -f | grep "USB-Soft-KVM"
 ```
 
-Stop the service:
+## Uninstallation
+
+To remove USB-Soft-KVM:
+
 ```bash
-sudo systemctl stop keyboard-monitor.service
+./usb-soft-kvm.sh
 ```
 
-Restart the service:
-```bash
-sudo systemctl restart keyboard-monitor.service
-```
-
-Disable the service:
-```bash
-sudo systemctl disable keyboard-monitor.service
-```
+Select "Uninstall" from the menu. This will remove all udev rules and scripts.
 
 ## Troubleshooting
 
-- Verify the keyboard name matches exactly:
-  ```bash
-  lsusb | grep -i holtek
-  ```
+**Monitor not switching:**
+- Check if udev rules are loaded: `cat /etc/udev/rules.d/90-usb-soft-kvm.rules`
+- Test ddccontrol manually: `sudo ddccontrol -r 0x60 -w 17 dev:/dev/i2c-12`
+- Check logs: `journalctl -f | grep "USB-Soft-KVM"`
+- Verify keyboard IDs: `lsusb`
 
-- Test ddccontrol commands manually:
-  ```bash
-  sudo ddccontrol -r 0x60 -w 17 dev:/dev/i2c-12
-  sudo ddccontrol -r 0x60 -w 15 dev:/dev/i2c-12
-  ```
+**Permission issues:**
+- Ensure i2c-dev module is loaded: `lsmod | grep i2c_dev`
+- Check i2c device permissions: `ls -l /dev/i2c-*`
 
-- Check i2c device permissions and availability
+**Udev rules not triggering:**
+- Reload rules: `sudo udevadm control --reload-rules && sudo udevadm trigger`
+- Test manually: `sudo udevadm test --action=add /sys/bus/usb/devices/[your-device]`
 
-## Configuration
+## Advanced Configuration
 
-You can adjust these variables in `monitor-keyboard.sh`:
-- `KEYBOARD_NAME`: The USB device name to monitor
-- `DEVICE`: The i2c device path
-- `CHECK_INTERVAL`: How often to check connection status (in seconds)
-- `INPUT_DISCONNECTED`: Display input value when keyboard is disconnected (HDMI/laptop)
-- `INPUT_CONNECTED`: Display input value when keyboard is connected (DisplayPort/this machine)
+The udev-based system creates these files:
+- `/etc/udev/rules.d/90-usb-soft-kvm.rules` - udev rules
+- `/usr/local/bin/usb-keyboard-connected*` - Scripts for keyboard connection
+- `/usr/local/bin/usb-keyboard-disconnected*` - Scripts for keyboard disconnection
 
-Example:
-```bash
-KEYBOARD_NAME="HOLTEK USB-HID Keyboard"
-DEVICE="/dev/i2c-12"
-CHECK_INTERVAL=2       # seconds between checks
-INPUT_DISCONNECTED=17  # HDMI input number for laptop (keyboard disconnected)
-INPUT_CONNECTED=15     # DisplayPort input for this machine (keyboard connected)
-```
+You can manually edit these files to customize behavior, such as:
+- Adding notification sounds
+- Triggering additional scripts
+- Adjusting timing with different sleep values
