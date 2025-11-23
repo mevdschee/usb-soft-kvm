@@ -1,6 +1,6 @@
 # USB Soft KVM
 
-USB Soft KVM uses a keyboard monitor service that monitors the connection status of a specified keyboard and automatically switches display inputs using ddccontrol.
+USB Soft KVM uses a keyboard monitor service that monitors the connection status of a specified USB connected keyboard and automatically switches display inputs using ddccontrol based on the connection status. This way you can have KVM functionality using only a USB switch.
 
 This setup assumes:
 - **Keyboard disconnected** (laptop mode): Switches to input 17 (HDMI)
