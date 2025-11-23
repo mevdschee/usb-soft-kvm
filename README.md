@@ -23,7 +23,7 @@ This setup assumes:
 │    │             │               │               │    │        │
 │    │             └───────▲───────┘               │    │        │
 │    │ USB                 │                       │    │ USB    │
-│    │                     │ I2C/DDC control       │    │        │
+│    │                     │ I2C/DDC Control       │    │        │
 │    │                     │ (Switch input source) │    │        │
 │    │                     └───────────────────────┘    │        │
 │    │                                                  │        │
