@@ -1,10 +1,10 @@
-# USB Soft KVM
+# USB-Soft-KVM
 
 A lightweight software solution that provides KVM-like functionality by automatically switching your monitor's input based on which computer your USB keyboard is connected to, allowing full KVM switching with a simple USB switch.
 
 ## What It Does
 
-USB Soft KVM monitors the connection status of a specific USB keyboard and automatically switches your monitor's display input when you use a physical USB switch. When you press the button on your USB switch to move your keyboard (and other peripherals) between computers, your monitor automatically follows, switching to the corresponding video input.
+USB-Soft-KVM monitors the connection status of a specific USB keyboard and automatically switches your monitor's display input when you use a physical USB switch. When you press the button on your USB switch to move your keyboard (and other peripherals) between computers, your monitor automatically follows, switching to the corresponding video input.
 
 ## Use Case
 
