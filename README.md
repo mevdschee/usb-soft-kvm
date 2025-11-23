@@ -20,8 +20,8 @@ Instead of manually switching your monitor's input every time you toggle your US
 
 1. Desktop PC runs the monitoring service (this software)
 2. USB switch connects keyboard to either Laptop or Desktop
-3. When keyboard connects to Desktop → Monitor switches to DisplayPort
-4. When keyboard disconnects from Desktop → Monitor switches to HDMI (Laptop)
+3. Keyboard connects to Desktop → Monitor switches to DisplayPort
+4. Keyboard disconnects from Desktop → Monitor switches to HDMI (Laptop)
 5. Monitor switching happens via DDC/CI protocol over I2C
 
 ## Requirements
