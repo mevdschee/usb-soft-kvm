@@ -14,10 +14,10 @@ This setup assumes:
 │  ┌────────────┐                            ┌──────────────┐    │
 │  │ Laptop     │                            │ Desktop      │    │
 │  │ (Other PC) │                            │ (This PC)    │    │
-│  └─┬───┬──────┘                            │ ┌──────────┐ │    │
-│    │   │                                   │ │ monitor  │ │    │
-│    │   │                                   │ │ keyboard │ │    │
-│    │   │  HDMI   ┌───────────────┐    DP   │ │ presence │ │    │
+│  └─┬───┬──────┘                            │ ┌──────────┐ │    │   1: Monitor USB to
+│    │   │                                   │ │ USB    ──┼─┼────┼─►    detect keyboard
+│    │   │                                   │ │   Soft   │ │    │   2: Send DCC signal
+│    │   │  HDMI   ┌───────────────┐    DP   │ │     KVM  │ │    │      to switch input
 │    │   └────────►│               │◄────────┤ └───┬──────┘ │    │
 │    │             │    Monitor    │         └─────┼────┬───┘    │
 │    │             │               │               │    │        │
