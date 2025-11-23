@@ -10,7 +10,7 @@ USB-Soft-KVM monitors the connection status of a specific USB keyboard and autom
 
 Perfect for users with:
 - **Two computers** sharing one monitor (e.g., a laptop and desktop)
-- **Multiple video inputs** on their monitor (HDMI, DisplayPort, etc.)
+- **Multiple video inputs** on the monitor (HDMI, DisplayPort, etc.)
 - **A USB switch** to toggle keyboard/mouse between computers
 - **No traditional KVM** or desire for a simpler, software-based solution
 
