@@ -1,10 +1,41 @@
 # USB Soft KVM
 
-USB Soft KVM uses a keyboard monitor service that monitors the connection status of a specified USB connected keyboard and automatically switches display inputs using ddccontrol based on the connection status. This way you can have KVM functionality using only a USB switch and this software.
+A lightweight software solution that provides KVM-like functionality by automatically switching your monitor's input based on which computer your USB keyboard is connected to.
 
-This setup assumes:
-- **Keyboard disconnected** (laptop mode): Switches to input 17 (HDMI)
-- **Keyboard connected** (desktop mode): Switches to input 16 (DisplayPort - this machine)
+## What It Does
+
+USB Soft KVM monitors the connection status of a specific USB keyboard and automatically switches your monitor's display input when you use a physical USB switch. When you press the button on your USB switch to move your keyboard (and other peripherals) between computers, your monitor automatically follows, switching to the corresponding video input.
+
+## Use Case
+
+Perfect for users with:
+- **Two computers** sharing one monitor (e.g., a laptop and desktop)
+- **Multiple video inputs** on their monitor (HDMI, DisplayPort, etc.)
+- **A USB switch** to toggle keyboard/mouse between computers
+- **No traditional KVM** or desire for a simpler, software-based solution
+
+Instead of manually switching your monitor's input every time you toggle your USB switch, this service handles it automatically.
+
+## How It Works
+
+1. Desktop PC runs the monitoring service (this software)
+2. USB switch connects keyboard to either Laptop or Desktop
+3. When keyboard connects to Desktop → Monitor switches to DisplayPort
+4. When keyboard disconnects from Desktop → Monitor switches to HDMI (Laptop)
+5. Monitor switching happens via DDC/CI protocol over I2C
+
+## Requirements
+
+- **Hardware:**
+  - Monitor with DDC/CI support (most modern monitors)
+  - USB switch (either multi-port or bidirectional)
+  - I2C bus access on the desktop PC
+  
+- **Software:**
+  - Linux system (tested on Ubuntu/Debian)
+  - `ddccontrol` package
+  - `i2c-dev` kernel module
+  - systemd (for service management)
 
 ## Architecture
 
