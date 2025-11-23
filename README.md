@@ -114,6 +114,7 @@ Detected monitors :
    Monitor Name: Iiyama GB3461WQSU (DP)
 ```
 
+**Configuration:**
 Note the device path (e.g., `/dev/i2c-12`). Update the `DEVICE` variable in `monitor-keyboard.sh` with this value.
 
 ### 2. Identify Display Input Source Values
@@ -152,9 +153,12 @@ In this example, the values are:
 - HDMI 1: `17`
 - HDMI 2: `18`
 
-Update the values in `monitor-keyboard.sh`:
-- `INPUT_DISCONNECTED`: Set to your HDMI value (for laptop)
-- `INPUT_CONNECTED`: Set to your DisplayPort value (for this machine)
+**Configuration:**
+1. Identify which input your **laptop** uses (e.g., HDMI 1 = value `17`)
+2. Identify which input your **desktop** uses (e.g., DisplayPort 1 = value `15`)
+3. Edit `monitor-keyboard.sh` and set:
+   - `INPUT_DISCONNECTED=17` (the laptop's HDMI value)
+   - `INPUT_CONNECTED=15` (the desktop's DisplayPort value)
 
 ### 3. Identify Your Keyboard Name
 
@@ -176,14 +180,17 @@ To find the exact name of your USB keyboard:
    > Bus 001 Device 010: ID 04d9:a055 Holtek Semiconductor, Inc. HOLTEK USB-HID Keyboard
    ```
 
-4. The keyboard name to use is the text after the ID (e.g., "HOLTEK USB-HID Keyboard").
+4. The keyboard name to use is a substring of the text after "ID" (e.g., "HOLTEK USB-HID Keyboard").
 
 Alternatively, view all USB devices:
 ```bash
 lsusb
 ```
 
-And look for your keyboard in the list. Update the `KEYBOARD_NAME` variable in `monitor-keyboard.sh` with the exact name.
+And look for your keyboard in the list. 
+
+**Configuration:**
+Update the `KEYBOARD_NAME` variable in `monitor-keyboard.sh` with the exact name.
 
 ## Installation Steps
 
@@ -254,7 +261,7 @@ sudo systemctl disable keyboard-monitor.service
 - Test ddccontrol commands manually:
   ```bash
   sudo ddccontrol -r 0x60 -w 17 dev:/dev/i2c-12
-  sudo ddccontrol -r 0x60 -w 16 dev:/dev/i2c-12
+  sudo ddccontrol -r 0x60 -w 15 dev:/dev/i2c-12
   ```
 
 - Check i2c device permissions and availability
@@ -267,3 +274,12 @@ You can adjust these variables in `monitor-keyboard.sh`:
 - `CHECK_INTERVAL`: How often to check connection status (in seconds)
 - `INPUT_DISCONNECTED`: Display input value when keyboard is disconnected (HDMI/laptop)
 - `INPUT_CONNECTED`: Display input value when keyboard is connected (DisplayPort/this machine)
+
+Example:
+```bash
+KEYBOARD_NAME="HOLTEK USB-HID Keyboard"
+DEVICE="/dev/i2c-12"
+CHECK_INTERVAL=2       # seconds between checks
+INPUT_DISCONNECTED=17  # HDMI input number for laptop (keyboard disconnected)
+INPUT_CONNECTED=15     # DisplayPort input for this machine (keyboard connected)
+```
