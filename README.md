@@ -141,7 +141,7 @@ Here: Vendor ID = `04d9`, Product ID = `a055`
 
 Create `/etc/udev/rules.d/90-usb-soft-kvm.rules`:
 
-```bash
+```
 ACTION=="add", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/bin/sh -c '/usr/bin/ddccontrol -r 0x60 -w 15 dev:/dev/i2c-12; /usr/bin/logger \"USB-Soft-KVM: Keyboard connected - switched to input 15 (Desktop)\"'"
 ACTION=="remove", ATTRS{idVendor}=="04d9", ATTRS{idProduct}=="a055", RUN+="/bin/sh -c '/usr/bin/ddccontrol -r 0x60 -w 17 dev:/dev/i2c-12; /usr/bin/logger \"USB-Soft-KVM: Keyboard disconnected - switched to input 17 (Laptop)\"'"
 ```
