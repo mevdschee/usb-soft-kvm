@@ -125,6 +125,33 @@ sudo ddccontrol -p
 
 This will probe your monitor and list all available input sources with their corresponding values. Look for the input source section in the output and note the values for your HDMI and DisplayPort inputs.
 
+Example output:
+```
+Detected monitors :
+ - Device: dev:/dev/i2c-12
+   DDC/CI supported: Yes
+   Monitor Name: Iiyama GB3461WQSU (DP)
+   Input type: Digital
+
+...
+
+> Input settings
+        > Input sources
+                > id=inputsource, name=Input Source Select (Main), address=0x60, delay=-1ms, type=2
+                  Possible values:
+                        > id=dp1 - name=DP-1, value=15
+                        > id=dp2 - name=DP-2, value=16
+                        > id=hdmi1 - name=HDMI-1, value=17
+                        > id=hdmi2 - name=HDMI-2, value=18
+                  supported, value=16, maximum=8206
+```
+
+In this example, the values are:
+- DisplayPort 1: `15`
+- DisplayPort 2: `16`
+- HDMI 1: `17`
+- HDMI 2: `18`
+
 Update the values in `monitor-keyboard.sh`:
 - `INPUT_DISCONNECTED`: Set to your HDMI value (for laptop)
 - `INPUT_CONNECTED`: Set to your DisplayPort value (for this machine)
