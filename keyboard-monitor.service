@@ -1,0 +1,18 @@
+[Unit]
+Description=USB Keyboard Monitor and Display Input Switcher
+After=multi-user.target
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/maurits/projects/usb-soft-kvm/monitor-keyboard.sh
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Run as root to access i2c devices
+User=root
+
+[Install]
+WantedBy=multi-user.target
