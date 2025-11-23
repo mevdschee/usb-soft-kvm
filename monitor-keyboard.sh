@@ -5,7 +5,7 @@
 
 KEYBOARD_NAME="USB-HID Keyboard"
 DEVICE="/dev/i2c-12"
-CHECK_INTERVAL=2  # seconds between checks
+CHECK_INTERVAL=2       # seconds between checks
 INPUT_DISCONNECTED=18  # HDMI input for laptop (keyboard disconnected)
 INPUT_CONNECTED=16     # DisplayPort input for this machine (keyboard connected)
 
