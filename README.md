@@ -111,7 +111,7 @@ This will list all detected monitors and their I2C bus addresses. Look for outpu
 Detected monitors :
  - Device: dev:/dev/i2c-12
    DDC/CI supported: Yes
-   Monitor Name: Your Monitor Name
+   Monitor Name: Iiyama GB3461WQSU (DP)
 ```
 
 Note the device path (e.g., `/dev/i2c-12`). Update the `DEVICE` variable in `monitor-keyboard.sh` with this value.
