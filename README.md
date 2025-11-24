@@ -79,9 +79,6 @@ Instead of manually switching your monitor's input every time you toggle your US
 │        └──────────┘               └─────────┘                  │
 │                                                                │
 └────────────────────────────────────────────────────────────────┘
-
-When keyboard is CONNECTED → Switch to DisplayPort (Desktop)
-When keyboard is DISCONNECTED → Switch to HDMI (Laptop)
 ```
 
 ## Quick Installation
