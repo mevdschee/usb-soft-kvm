@@ -22,28 +22,28 @@ Instead of manually switching your monitor's input every time you toggle your US
 2. USB switch connects keyboard to either Laptop or Desktop
 3. Monitor switching happens instantly via DDC/CI protocol over I2C
 
-**Switch to Desktop**:
+**Switch to Desktop:**
 - Keyboard connects to Desktop
 - Connect udev rule triggers DDC/CI command
 - Monitor switches to DisplayPort
 
-**Switch to Laptop**:
+**Switch to Laptop:**
 - Keyboard disconnects from Desktop
 - Disconnect udev rule triggers DDC/CI command
 - Monitor switches to HDMI (Laptop)
 
 ## Requirements
 
-- **Hardware:**
-  - Monitor with DDC/CI support (most modern monitors)
-  - USB switch (either multi-port or bidirectional)
-  - I2C bus access on the desktop PC
-  
-- **Software:**
-  - Linux system (tested on Ubuntu/Debian)
-  - `ddccontrol` package
-  - `i2c-dev` kernel module
-  - `dialog` package (for installer)
+**Hardware:**
+- Monitor with DDC/CI support (most modern monitors)
+- USB switch (either multi-port or bidirectional)
+- I2C bus access on the desktop PC
+
+**Software:**
+- Linux system (tested on Ubuntu/Debian)
+- `ddccontrol` package
+- `i2c-dev` kernel module
+- `dialog` package (for installer)
 
 ## Architecture
 
