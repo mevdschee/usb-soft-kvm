@@ -18,8 +18,8 @@ Instead of manually switching your monitor's input every time you toggle your US
 
 ## How It Works
 
-- Connect/disconnect udev rules monitor USB device events on the Desktop PC
 - USB switch connects keyboard to either Laptop or Desktop
+- Connect/disconnect udev rules monitor USB device events on the Desktop PC
 - Monitor switching happens instantly via DDC/CI protocol over I2C
 
 **Switch to Desktop:**
