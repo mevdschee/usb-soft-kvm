@@ -18,19 +18,19 @@ Instead of manually switching your monitor's input every time you toggle your US
 
 ## How It Works
 
-1. Connect/disconnect udev rules monitor USB device events on the Desktop PC
-2. USB switch connects keyboard to either Laptop or Desktop
-3. Monitor switching happens instantly via DDC/CI protocol over I2C
+- Connect/disconnect udev rules monitor USB device events on the Desktop PC
+- USB switch connects keyboard to either Laptop or Desktop
+- Monitor switching happens instantly via DDC/CI protocol over I2C
 
 **Switch to Desktop:**
-- Keyboard connects to Desktop
-- Connect udev rule triggers DDC/CI command
-- Monitor switches to DisplayPort
+1. Keyboard connects to Desktop
+2. Connect udev rule triggers DDC/CI command
+3. Monitor switches to DisplayPort
 
 **Switch to Laptop:**
-- Keyboard disconnects from Desktop
-- Disconnect udev rule triggers DDC/CI command
-- Monitor switches to HDMI (Laptop)
+1. Keyboard disconnects from Desktop
+2. Disconnect udev rule triggers DDC/CI command
+3. Monitor switches to HDMI (Laptop)
 
 ## Requirements
 
