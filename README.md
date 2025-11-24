@@ -52,15 +52,14 @@ Instead of manually switching your monitor's input every time you toggle your US
 │                                                                │
 │  ┌────────────┐                            ┌──────────────┐    │
 │  │ Laptop     │                            │ Desktop      │    │
-│  │ (Other PC) │                            │ (This PC)    │    │
-│  └─┬───┬──────┘                            │ ┌──────────┐ │    │   1: Monitor USB to
-│    │   │                                   │ │ USB    ──┼─┼────┼─►    detect keyboard
-│    │   │                                   │ │   Soft   │ │    │   2: Send DCC signal
-│    │   │  HDMI   ┌───────────────┐    DP   │ │     KVM  │ │    │      to switch input
-│    │   └────────►│               │◄────────┤ └───┬──────┘ │    │
-│    │             │    Monitor    │         └─────┼────┬───┘    │
-│    │             │               │               │    │        │
-│    │             └───────▲───────┘               │    │        │
+│  │ (Other PC) │                            │ (This PC)    │    │   1: Keyboard added:
+│  └─┬───┬──────┘                            │ ┌──────────┐ │    │      Send DCC signal
+│    │   │                                   │ │ udev   ──┼─┼────┼─►    to switch input
+│    │   │  HDMI   ┌───────────────┐    DP   │ │ rules    │ │    │      to DP (Desktop)
+│    │   └────────►│               │◄────────┤ └───┬──────┘ │    │   2: Keyboard removed:
+│    │             │    Monitor    │         └─────┼────┬───┘    │      Send DCC signal
+│    │             │               │               │    │        │      to switch input
+│    │             └───────▲───────┘               │    │        │      to HDMI (Laptop)
 │    │ USB                 │                       │    │ USB    │
 │    │                     │ I2C/DDC Control       │    │        │
 │    │                     │ (Switch input source) │    │        │
