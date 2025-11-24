@@ -206,4 +206,4 @@ The udev-based system creates this file:
 You can manually edit this file to customize behavior, such as:
 - Adding notification sounds
 - Triggering additional commands
-- Adjusting timing with different sleep values
+- Adjusting timing by adding sleep calls
